@@ -1,0 +1,35 @@
+<h1><%= @cat.name %></h1>
+
+<img src="https://i.ytimg.com/vi/prALrHUJ8Ns/hqdefault.jpg" alt="cat"  />
+
+<table>
+  <tr>
+    <th>Attribute</th>
+    <th>Value</th>
+  </tr>
+  <% [:age, :birth_date, :color, :sex].each do |attr_name| %>
+    <tr>
+      <td><%= attr_name %></td>
+      <td><%= @cat.send(attr_name) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<% if current_user && @cat.user_id == current_user.id %>
+  <%= link_to "Edit #{@cat.name}", edit_cat_url(@cat) %>
+<% elsif current_user%>
+  <%= link_to "Request appointment with #{@cat.name}", "#{new_cat_rental_request_url}?cat_id=#{@cat.id} " %>
+<% end %>
+
+<h2>Rental Requests</h2>
+<table>
+  <tr>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Status</th>
+    <th>Requester</th>
+  </tr>
+  <% @cat.rental_requests.includes(:requester).order("start_date").each do |req| %>
+    <%= render "req_tr", req: req %>
+  <% end %>
+</table>
